@@ -5,6 +5,7 @@ import android.content.Context;
 import com.didichuxing.doraemonkit.R;
 import com.didichuxing.doraemonkit.kit.Category;
 import com.didichuxing.doraemonkit.kit.IKit;
+import com.didichuxing.doraemonkit.ui.KitFloatPage;
 import com.didichuxing.doraemonkit.ui.base.FloatPageManager;
 
 /**
@@ -29,7 +30,7 @@ public class TemporaryClose implements IKit {
 
     @Override
     public void onClick(Context context) {
-        FloatPageManager.getInstance().removeAll();
+        FloatPageManager.getInstance().removeAll(KitFloatPage.class);
     }
 
     @Override

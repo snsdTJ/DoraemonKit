@@ -30,6 +30,9 @@ public class FileUtil {
 
     public static final String TXT = "txt";
     public static final String JPG = "jpg";
+    public static final String DB = "db";
+    public static final String SHARED_PREFS = "shared_prefs";
+    public static final String XML = ".xml";
 
     private FileUtil() {
     }
@@ -51,7 +54,7 @@ public class FileUtil {
     }
 
     public static void systemShare(Context context, File file) {
-        if (file == null || !file.exists()){
+        if (file == null || !file.exists()) {
             return;
         }
         String suffix = getSuffix(file);
@@ -166,5 +169,59 @@ public class FileUtil {
         }
         String suffix = getSuffix(file);
         return "jpg".equals(suffix) || "jpeg".equals(suffix) || "png".equals(suffix) || "bmp".equals(suffix);
+    }
+
+    public static boolean isVideo(File file) {
+        if (file == null) {
+            return false;
+        }
+        String suffix = getSuffix(file);
+        return "3gp".equals(suffix) || "mp4".equals(suffix) || "mkv".equals(suffix) || "webm".equals(suffix);
+    }
+
+    public static boolean isDB(File file) {
+        if (file == null) {
+            return false;
+        }
+        String suffix = getSuffix(file);
+        return "db".equals(suffix);
+    }
+
+    public static boolean isSp(File file) {
+        File parentFile = file.getParentFile();
+        if (parentFile != null && parentFile.getName().equals(SHARED_PREFS) && file.getName().contains(XML)) {
+            return true;
+        }
+        return false;
+    }
+    /**
+     * @param file
+     */
+    public static void deleteDirectory(File file) {
+        if (file.isDirectory()) {
+            File[] listFiles = file.listFiles();
+            for (File f : listFiles) {
+                deleteDirectory(f);
+            }
+            file.delete();
+        } else {
+            file.delete();
+        }
+    }
+
+    public static long getDirectorySize(File directory) {
+        long size = 0;
+        File[] listFiles = directory.listFiles();
+        if (listFiles == null) {
+            return size;
+        }
+        for (File file : listFiles) {
+            if (file.isDirectory()) {
+                size += getDirectorySize(file);
+            } else {
+                size += file.length();
+            }
+        }
+        return size;
     }
 }

@@ -24,10 +24,8 @@ class DoraemonPlugin implements Plugin<Project> {
     } else {
       variants = project.android.libraryVariants
     }
-
     project.dependencies {
-      // TODO this should come transitively
-      debugCompile 'org.aspectj:aspectjrt:1.8.6'
+      implementation 'org.aspectj:aspectjrt:1.8.6'
     }
 
     variants.all { variant ->

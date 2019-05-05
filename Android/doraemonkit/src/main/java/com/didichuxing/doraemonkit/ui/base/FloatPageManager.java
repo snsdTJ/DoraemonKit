@@ -1,6 +1,5 @@
 package com.didichuxing.doraemonkit.ui.base;
 
-import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.WindowManager;
@@ -22,7 +21,7 @@ public class FloatPageManager {
     private Context mContext;
     private List<BaseFloatPage> mPages = new ArrayList<>();
 
-    private Activity mResumedActivity;
+    private List<FloatPageManagerListener> mListeners = new ArrayList<>();
 
     public void notifyBackground() {
         for (BaseFloatPage page : mPages) {
@@ -34,20 +33,6 @@ public class FloatPageManager {
         for (BaseFloatPage page : mPages) {
             page.onEnterForeground();
         }
-    }
-
-    public void onActivityResumed(Activity activity) {
-        mResumedActivity = activity;
-    }
-
-    public void onActivityPaused(Activity activity) {
-        if (mResumedActivity == activity) {
-            mResumedActivity = null;
-        }
-    }
-
-    public Activity getResumedActivity() {
-        return mResumedActivity;
     }
 
     private static class Holder {
@@ -82,6 +67,9 @@ public class FloatPageManager {
             page.performCreate(mContext);
             mWindowManager.addView(page.getRootView(),
                     page.getLayoutParams());
+            for (FloatPageManagerListener listener : mListeners) {
+                listener.onPageAdd(page);
+            }
         } catch (InstantiationException e) {
             LogHelper.e(TAG, e.toString());
         } catch (IllegalAccessException e) {
@@ -139,5 +127,17 @@ public class FloatPageManager {
             }
         }
         return null;
+    }
+
+    public void addListener(FloatPageManagerListener listener) {
+        mListeners.add(listener);
+    }
+
+    public void removeListener(FloatPageManagerListener listener) {
+        mListeners.remove(listener);
+    }
+
+    public interface FloatPageManagerListener {
+        void onPageAdd(BaseFloatPage page);
     }
 }

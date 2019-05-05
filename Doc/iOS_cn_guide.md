@@ -3,9 +3,10 @@
 ### 1、cocoapods依赖
 
 ```
-    pod 'DoraemonKit/Core', '~> 1.1.4', :configurations => ['Debug']
-    pod 'DoraemonKit/WithLogger', '~> 1.1.4', :configurations => ['Debug']
-    pod 'DoraemonKit/WithGPS', '~> 1.1.4', :configurations => ['Debug']
+    pod 'DoraemonKit/Core', '~> 1.1.7', :configurations => ['Debug']
+    pod 'DoraemonKit/WithLogger', '~> 1.1.7', :configurations => ['Debug']
+    pod 'DoraemonKit/WithGPS', '~> 1.1.7', :configurations => ['Debug']
+    pod 'DoraemonKit/WithLoad', '~> 1.1.7', :configurations => ['Debug']
 ```
 Core subspec作为核心，必须引入。
 
@@ -20,6 +21,10 @@ MockGPS存在一些兼容性问题（绝大部分情况是好的，问题详见[
 在App启动的时候添加一下代码
 
 ```
+#ifdef DEBUG
+#import <DoraemonKit/DoraemonManager.h>
+#endif
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     #ifdef DEBUG
         [[DoraemonManager shareInstance] install];
@@ -32,7 +37,7 @@ MockGPS存在一些兼容性问题（绝大部分情况是好的，问题详见[
 ### 3、添加自定义测试模块到Doraemon面板中（非必要）
 比如我们要在Doraemon面板中添加一个环境切换的功能。
 
-第一步：新建一个类，实现KDDoraemonPluginProtocol协议中的pluginDidLoad方法，该方法就是以后点击Doraemon工具面板中“环境切换”按钮触发的事件。
+第一步：新建一个类，实现DoraemonPluginProtocol协议中的pluginDidLoad方法，该方法就是以后点击Doraemon工具面板中“环境切换”按钮触发的事件。
 
 比如以代驾司机端为例，点击按钮之后会进入环境切换页面。
 
@@ -71,6 +76,35 @@ MockGPS存在一些兼容性问题（绝大部分情况是好的，问题详见[
         [APP_INTERACOTR.rootNav openURL:@"KDSJ://KDWebViewController" withQuery:@{@"urlString":h5Url}];
     }];
     [[DoraemonManager shareInstance] install];
+}
+```
+### 4、swift 接入方式
+pod 同 OC 一样
+
+#### swift 4.0 4.2 5.0 接入方式都一样
+
+```
+import UIKit
+
+#if DEBUG
+    import DoraemonKit
+#endif
+
+@UIApplicationMain
+class AppDelegate: UIResponder, UIApplicationDelegate {
+
+    var window: UIWindow?
+
+
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        // Override point for customization after application launch.
+        
+    #if DEBUG
+        DoraemonManager.shareInstance().install()
+    #endif
+        return true
+    }
+    
 }
 ```
 

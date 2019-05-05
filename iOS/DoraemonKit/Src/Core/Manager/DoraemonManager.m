@@ -55,7 +55,7 @@ typedef void (^DoraemonPerformanceBlock)(NSDictionary *);
 
 @implementation DoraemonManager
 
-+ (DoraemonManager *)shareInstance{
++ (nonnull DoraemonManager *)shareInstance{
     static dispatch_once_t once;
     static DoraemonManager *instance;
     dispatch_once(&once, ^{
@@ -76,7 +76,7 @@ typedef void (^DoraemonPerformanceBlock)(NSDictionary *);
         Class pluginClass = NSClassFromString(pluginName);
         id<DoraemonStartPluginProtocol> plugin = [[pluginClass alloc] init];
         if (plugin) {
-            [plugin pluginDidLoad];
+            [plugin startPluginDidLoad];
         }
     }
 
@@ -163,7 +163,9 @@ typedef void (^DoraemonPerformanceBlock)(NSDictionary *);
     [self addPluginWithPluginType:DoraemonManagerPluginType_DoraemonNetFlowPlugin];
     [self addPluginWithPluginType:DoraemonManagerPluginType_DoraemonANRPlugin];
     [self addPluginWithPluginType:DoraemonManagerPluginType_DoraemonAllTestPlugin];
+#if DoraemonWithLoad
     [self addPluginWithPluginType:DoraemonManagerPluginType_DoraemonMethodUseTimePlugin];
+#endif
     
     #pragma mark - 视觉工具
     [self addPluginWithPluginType:DoraemonManagerPluginType_DoraemonColorPickPlugin];
